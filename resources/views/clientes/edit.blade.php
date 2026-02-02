@@ -1,89 +1,140 @@
 @extends('layouts.app')
 
-@section('title', 'Editar Cliente - CRM Laravel')
+@section('title', 'Editar Cliente: ' . $cliente->nombre)
 
 @section('content')
-<div class="row">
-    <div class="col-md-8 mx-auto">
-        <div class="card shadow">
-            <div class="card-header bg-warning text-dark">
-                <h4 class="mb-0"><i class="bi bi-pencil"></i> Editar Cliente</h4>
-            </div>
-            <div class="card-body">
-                <form action="{{ route('clientes.update', $cliente) }}" method="POST">
-                    @csrf
-                    @method('PUT')
+<div class="container-fluid">
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-1">
+                    <li class="breadcrumb-item"><a href="{{ route('home') }}" class="text-decoration-none">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('clientes.index') }}" class="text-decoration-none">Clientes</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Editar</li>
+                </ol>
+            </nav>
+            <h1 class="h3 text-dark fw-bold mb-0">Modificar Datos del Cliente</h1>
+        </div>
+    </div>
 
-                    <div class="mb-3">
-                        <label for="nombre" class="form-label">Nombre <span class="text-danger">*</span></label>
-                        <input type="text" 
-                               class="form-control @error('nombre') is-invalid @enderror" 
-                               id="nombre" 
-                               name="nombre" 
-                               value="{{ old('nombre', $cliente->nombre) }}" 
-                               required>
-                        @error('nombre')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card border-0 shadow-sm">
+                
+                <div class="card-header bg-white py-3 border-bottom">
+                    <h5 class="card-title fw-bold mb-0 text-primary">
+                        <i class="bi bi-pencil-square me-2"></i>Formulario de Edición
+                    </h5>
+                </div>
 
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
-                        <input type="email" 
-                               class="form-control @error('email') is-invalid @enderror" 
-                               id="email" 
-                               name="email" 
-                               value="{{ old('email', $cliente->email) }}" 
-                               required>
-                        @error('email')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
+                <div class="card-body p-4">
+                    <form action="{{ route('clientes.update', $cliente) }}" method="POST">
+                        @csrf
+                        @method('PUT')
 
-                    <div class="mb-3">
-                        <label for="telefono" class="form-label">Teléfono</label>
-                        <input type="text" 
-                               class="form-control @error('telefono') is-invalid @enderror" 
-                               id="telefono" 
-                               name="telefono" 
-                               value="{{ old('telefono', $cliente->telefono) }}">
-                        @error('telefono')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
+                        <h6 class="text-uppercase text-muted small fw-bold mb-3">Información General</h6>
+                        <div class="row g-4 mb-4">
+                            
+                            <div class="col-md-6">
+                                <label for="nombre" class="form-label fw-medium">Nombre Completo <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-person"></i></span>
+                                    <input type="text" 
+                                           class="form-control border-start-0 @error('nombre') is-invalid @enderror" 
+                                           id="nombre" 
+                                           name="nombre" 
+                                           value="{{ old('nombre', $cliente->nombre) }}" 
+                                           placeholder="Ej: Juan Pérez"
+                                           required>
+                                    @error('nombre')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
 
-                    <div class="mb-3">
-                        <label for="direccion" class="form-label">Dirección</label>
-                        <textarea class="form-control @error('direccion') is-invalid @enderror" 
-                                  id="direccion" 
-                                  name="direccion" 
-                                  rows="3">{{ old('direccion', $cliente->direccion) }}</textarea>
-                        @error('direccion')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
+                            <div class="col-md-6">
+                                <label for="empresa" class="form-label fw-medium">Empresa / Organización</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-building"></i></span>
+                                    <input type="text" 
+                                           class="form-control border-start-0 @error('empresa') is-invalid @enderror" 
+                                           id="empresa" 
+                                           name="empresa" 
+                                           placeholder="Ej: Soluciones Tech S.L."
+                                           value="{{ old('empresa', $cliente->empresa) }}">
+                                    @error('empresa')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
 
-                    <div class="mb-3">
-                        <label for="empresa" class="form-label">Empresa</label>
-                        <input type="text" 
-                               class="form-control @error('empresa') is-invalid @enderror" 
-                               id="empresa" 
-                               name="empresa" 
-                               value="{{ old('empresa', $cliente->empresa) }}">
-                        @error('empresa')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
+                        <hr class="text-muted opacity-10 my-4">
 
-                    <div class="d-flex justify-content-between">
-                        <a href="{{ route('clientes.index') }}" class="btn btn-secondary">
-                            <i class="bi bi-arrow-left"></i> Volver
-                        </a>
-                        <button type="submit" class="btn btn-warning">
-                            <i class="bi bi-save"></i> Actualizar Cliente
-                        </button>
-                    </div>
-                </form>
+                        <h6 class="text-uppercase text-muted small fw-bold mb-3">Datos de Contacto</h6>
+                        <div class="row g-4 mb-4">
+                            
+                            <div class="col-md-6">
+                                <label for="email" class="form-label fw-medium">Correo Electrónico <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-envelope"></i></span>
+                                    <input type="email" 
+                                           class="form-control border-start-0 @error('email') is-invalid @enderror" 
+                                           id="email" 
+                                           name="email" 
+                                           value="{{ old('email', $cliente->email) }}" 
+                                           placeholder="cliente@ejemplo.com"
+                                           required>
+                                    @error('email')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="telefono" class="form-label fw-medium">Teléfono Móvil</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-telephone"></i></span>
+                                    <input type="text" 
+                                           class="form-control border-start-0 @error('telefono') is-invalid @enderror" 
+                                           id="telefono" 
+                                           name="telefono" 
+                                           placeholder="+34 600 000 000"
+                                           value="{{ old('telefono', $cliente->telefono) }}">
+                                    @error('telefono')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="direccion" class="form-label fw-medium">Dirección Física</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-geo-alt"></i></span>
+                                    <textarea class="form-control border-start-0 @error('direccion') is-invalid @enderror" 
+                                              id="direccion" 
+                                              name="direccion" 
+                                              rows="2"
+                                              placeholder="Calle Principal, 123, Ciudad...">{{ old('direccion', $cliente->direccion) }}</textarea>
+                                    @error('direccion')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 mt-5 pt-3 border-top">
+                            <a href="{{ route('clientes.index') }}" class="btn btn-light border">
+                                Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="bi bi-check-circle me-2"></i>Guardar Cambios
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
             </div>
         </div>
     </div>
