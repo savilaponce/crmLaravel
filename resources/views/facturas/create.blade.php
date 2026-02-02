@@ -1,34 +1,151 @@
 @extends('layouts.app')
-@section('title', 'Nueva Factura')
+
+@section('title', 'Generar Nueva Factura')
+
 @section('content')
-<div class="row"><div class="col-md-8 mx-auto"><div class="card shadow">
-<div class="card-header bg-primary text-white"><h4 class="mb-0"><i class="bi bi-receipt"></i> Nueva Factura</h4></div>
-<div class="card-body">
-<form action="{{ route('facturas.store') }}" method="POST">@csrf
-<div class="mb-3"><label>Número de Factura *</label><input type="text" class="form-control @error('numero_factura') is-invalid @enderror" name="numero_factura" value="{{ old('numero_factura') }}" required>@error('numero_factura')<div class="invalid-feedback">{{ $message }}</div>@enderror</div>
-<div class="mb-3">
-<label>Cliente *</label>
-<select class="form-select @error('cliente_id') is-invalid @enderror" name="cliente_id" required>
-<option value="">Seleccione un cliente</option>
-@foreach($clientes as $cliente)
-<option value="{{ $cliente->id }}" {{ old('cliente_id') == $cliente->id ? 'selected' : '' }}>{{ $cliente->nombre }}</option>
-@endforeach
-</select>
-@error('cliente_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
+<div class="container-fluid">
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-1">
+                    <li class="breadcrumb-item"><a href="{{ route('home') }}" class="text-decoration-none">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('facturas.index') }}" class="text-decoration-none">Facturas</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Nueva</li>
+                </ol>
+            </nav>
+            <h1 class="h3 text-dark fw-bold mb-0">Emisión de Factura</h1>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card border-0 shadow-sm">
+                
+                <div class="card-header bg-white py-3 border-bottom">
+                    <h5 class="card-title fw-bold mb-0 text-primary">
+                        <i class="bi bi-receipt me-2"></i>Detalles de la Factura
+                    </h5>
+                </div>
+
+                <div class="card-body p-4">
+                    <form action="{{ route('facturas.store') }}" method="POST">
+                        @csrf
+
+                        <h6 class="text-uppercase text-muted small fw-bold mb-3">Datos Generales</h6>
+                        <div class="row g-4 mb-4">
+                            
+                            <div class="col-md-6">
+                                <label for="numero_factura" class="form-label fw-medium">Número de Factura <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-hash"></i></span>
+                                    <input type="text" 
+                                           class="form-control border-start-0 @error('numero_factura') is-invalid @enderror" 
+                                           id="numero_factura" 
+                                           name="numero_factura" 
+                                           value="{{ old('numero_factura') }}" 
+                                           placeholder="Ej: F-2023-001"
+                                           required>
+                                    @error('numero_factura')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="fecha" class="form-label fw-medium">Fecha de Emisión <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-calendar-date"></i></span>
+                                    <input type="date" 
+                                           class="form-control border-start-0 @error('fecha') is-invalid @enderror" 
+                                           id="fecha" 
+                                           name="fecha" 
+                                           value="{{ old('fecha', date('Y-m-d')) }}" 
+                                           required>
+                                    @error('fecha')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="cliente_id" class="form-label fw-medium">Cliente Asociado <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-person-bounding-box"></i></span>
+                                <select class="form-select border-start-0 @error('cliente_id') is-invalid @enderror" 
+                                        id="cliente_id" 
+                                        name="cliente_id" 
+                                        required>
+                                    <option value="">Seleccione un cliente del listado...</option>
+                                    @foreach($clientes as $cliente)
+                                        <option value="{{ $cliente->id }}" {{ old('cliente_id') == $cliente->id ? 'selected' : '' }}>
+                                            {{ $cliente->nombre }} (ID: {{ $cliente->id }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('cliente_id')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="form-text text-muted small ms-2">Asegúrate de que el cliente esté registrado antes de crear la factura.</div>
+                        </div>
+
+                        <hr class="text-muted opacity-10 my-4">
+
+                        <h6 class="text-uppercase text-muted small fw-bold mb-3">Detalles Económicos</h6>
+                        <div class="row g-4 mb-4">
+                            
+                            <div class="col-md-6">
+                                <label for="total" class="form-label fw-medium">Importe Total <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-currency-euro"></i></span>
+                                    <input type="number" 
+                                           step="0.01" 
+                                           class="form-control border-start-0 fw-bold text-dark @error('total') is-invalid @enderror" 
+                                           id="total" 
+                                           name="total" 
+                                           placeholder="0.00"
+                                           value="{{ old('total') }}" 
+                                           required>
+                                    @error('total')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="estado" class="form-label fw-medium">Estado Inicial <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-info-circle"></i></span>
+                                    <select class="form-select border-start-0 @error('estado') is-invalid @enderror" 
+                                            id="estado" 
+                                            name="estado" 
+                                            required>
+                                        <option value="pendiente" {{ old('estado') == 'pendiente' ? 'selected' : '' }}>🕒 Pendiente</option>
+                                        <option value="pagada" {{ old('estado') == 'pagada' ? 'selected' : '' }}>✅ Pagada</option>
+                                        <option value="cancelada" {{ old('estado') == 'cancelada' ? 'selected' : '' }}>❌ Cancelada</option>
+                                    </select>
+                                    @error('estado')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 mt-5 pt-3 border-top">
+                            <a href="{{ route('facturas.index') }}" class="btn btn-light border">
+                                Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="bi bi-check-lg me-2"></i>Generar Factura
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<div class="mb-3"><label>Fecha *</label><input type="date" class="form-control @error('fecha') is-invalid @enderror" name="fecha" value="{{ old('fecha') }}" required>@error('fecha')<div class="invalid-feedback">{{ $message }}</div>@enderror</div>
-<div class="mb-3"><label>Total (€) *</label><input type="number" step="0.01" class="form-control @error('total') is-invalid @enderror" name="total" value="{{ old('total') }}" required>@error('total')<div class="invalid-feedback">{{ $message }}</div>@enderror</div>
-<div class="mb-3">
-<label>Estado *</label>
-<select class="form-select @error('estado') is-invalid @enderror" name="estado" required>
-<option value="pendiente" {{ old('estado') == 'pendiente' ? 'selected' : '' }}>Pendiente</option>
-<option value="pagada" {{ old('estado') == 'pagada' ? 'selected' : '' }}>Pagada</option>
-<option value="cancelada" {{ old('estado') == 'cancelada' ? 'selected' : '' }}>Cancelada</option>
-</select>
-@error('estado')<div class="invalid-feedback">{{ $message }}</div>@enderror
-</div>
-<div class="d-flex justify-content-between">
-<a href="{{ route('facturas.index') }}" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Volver</a>
-<button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Guardar</button>
-</div></form></div></div></div></div>
 @endsection
