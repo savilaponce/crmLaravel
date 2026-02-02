@@ -129,39 +129,6 @@ Accede a la aplicación en: `http://localhost:8000`
 
 El sistema no requiere autenticación en esta versión, por lo que puedes acceder directamente a todos los módulos.
 
-## Estructura del Proyecto
-
-```
-crm-laravel/
-├── app/
-│   ├── Http/
-│   │   └── Controllers/
-│   │       ├── ClienteController.php
-│   │       ├── ProductoController.php
-│   │       ├── ProveedorController.php
-│   │       ├── EmpleadoController.php
-│   │       └── FacturaController.php
-│   └── Models/
-│       ├── Cliente.php
-│       ├── Producto.php
-│       ├── Proveedor.php
-│       ├── Empleado.php
-│       └── Factura.php
-├── database/
-│   ├── migrations/
-│   └── crm_laravel.sql
-├── resources/
-│   └── views/
-│       ├── layouts/
-│       ├── clientes/
-│       ├── productos/
-│       ├── proveedores/
-│       ├── empleados/
-│       └── facturas/
-└── routes/
-    └── web.php
-```
-
 ## Comandos Útiles
 
 ```bash
