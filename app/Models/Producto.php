@@ -14,8 +14,10 @@ class Producto extends Model
         'descripcion',
         'precio',
         'stock',
-        'sku'
-    ];
+        'sku',
+        'imagen',
+        'ficha_tecnica'    
+        ];
 
     protected $casts = [
         'precio' => 'decimal:2',

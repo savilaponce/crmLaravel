@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController; 
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ProveedorController;
@@ -11,29 +12,30 @@ use App\Http\Controllers\FacturaController;
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
 */
 
-// Ruta principal - Dashboard
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+// --- RUTAS DE AUTENTICACIÓN (Login y Logout) ---
+// Login
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
 
-// Rutas de Clientes
-Route::resource('clientes', ClienteController::class);
+// Logout (Esta es la ruta que te faltaba y causaba el error)
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Rutas de Productos
-Route::resource('productos', ProductoController::class);
 
-// Rutas de Proveedores
-Route::resource('proveedores', ProveedorController::class);
+// --- RUTAS PROTEGIDAS (Solo accesibles si estás logueado) ---
+Route::middleware('auth')->group(function () {
 
-// Rutas de Empleados
-Route::resource('empleados', EmpleadoController::class);
+    // Ruta principal - Dashboard
+    Route::get('/', function () {
+        return view('welcome'); // O cambia 'welcome' por tu vista de dashboard
+    })->name('home');
 
-// Rutas de Facturas
-Route::resource('facturas', FacturaController::class);
+    // Rutas de Recursos (CRUDs completos)
+    Route::resource('clientes', ClienteController::class);
+    Route::resource('productos', ProductoController::class);
+    Route::resource('proveedores', ProveedorController::class);
+    Route::resource('empleados', EmpleadoController::class);
+    Route::resource('facturas', FacturaController::class);
+
+});

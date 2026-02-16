@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    
     <title>@yield('title', 'CRM Laravel')</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
             --sidebar-width: 260px;
-            --sidebar-bg: #1e293b; /* Slate oscuro elegante */
+            --sidebar-bg: #1e293b;
             --sidebar-color: #cbd5e1;
             --primary-color: #3b82f6;
             --primary-hover: #2563eb;
@@ -127,6 +128,8 @@
             }
         }
     </style>
+
+    @yield('css') 
 </head>
 <body>
 
@@ -186,14 +189,23 @@
             <div class="dropdown">
                 <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle text-dark" id="userDropdown" data-bs-toggle="dropdown">
                     <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 35px; height: 35px;">
-                        <i class="bi bi-person-fill"></i>
+                        {{ substr(Auth::user()->name ?? 'U', 0, 1) }}
                     </div>
-                    <span class="d-none d-md-block fw-medium">Administrador</span>
+                    <span class="d-none d-md-block fw-medium">
+                        {{ Auth::user()->name ?? 'Usuario' }}
+                    </span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end border-0 shadow">
                     <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Perfil</a></li>
                     <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-box-arrow-right me-2"></i>Salir</a></li>
+                    <li>
+                        <form action="{{ route('logout') }}" method="POST">
+                            @csrf
+                            <button type="submit" class="dropdown-item text-danger">
+                                <i class="bi bi-box-arrow-right me-2"></i>Salir
+                            </button>
+                        </form>
+                    </li>
                 </ul>
             </div>
         </header>
@@ -238,6 +250,7 @@
             document.getElementById('sidebar').classList.toggle('show');
         });
     </script>
+
     @yield('scripts')
 </body>
 </html>

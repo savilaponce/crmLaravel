@@ -24,12 +24,12 @@
                 
                 <div class="card-header bg-white py-3 border-bottom">
                     <h5 class="card-title fw-bold mb-0 text-primary">
-                        <i class="bi bi-box-seam me-2"></i>Ficha de Producto
+                        <i class="bi bi-pencil-square me-2"></i>Edición de Producto
                     </h5>
                 </div>
 
                 <div class="card-body p-4">
-                    <form action="{{ route('productos.update', $producto) }}" method="POST">
+                    <form action="{{ route('productos.update', $producto) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
 
@@ -73,9 +73,47 @@
                                 <textarea class="form-control @error('descripcion') is-invalid @enderror" 
                                           id="descripcion" 
                                           name="descripcion" 
-                                          rows="3"
-                                          placeholder="Añade detalles sobre características, garantías, etc.">{{ old('descripcion', $producto->descripcion) }}</textarea>
+                                          rows="3">{{ old('descripcion', $producto->descripcion) }}</textarea>
                                 @error('descripcion')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <hr class="text-muted opacity-10 my-4">
+
+                        <h6 class="text-uppercase text-muted small fw-bold mb-3">Multimedia y Archivos</h6>
+                        <div class="row g-4 mb-4">
+                            <div class="col-md-6">
+                                <label for="imagen" class="form-label fw-medium">Imagen del Producto</label>
+                                <div class="mb-2">
+                                    @if($producto->imagen)
+                                        <div class="d-flex align-items-center p-2 border rounded bg-light mb-2">
+                                            <img src="{{ asset('storage/' . $producto->imagen) }}" alt="Actual" class="rounded me-2" style="width: 50px; height: 50px; object-fit: cover;">
+                                            <span class="small text-muted">Imagen actual guardada</span>
+                                        </div>
+                                    @endif
+                                </div>
+                                <input class="form-control @error('imagen') is-invalid @enderror" type="file" id="imagen" name="imagen" accept="image/*">
+                                <div class="form-text text-muted small">Deja este campo vacío si no quieres cambiar la imagen.</div>
+                                @error('imagen')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="ficha_tecnica" class="form-label fw-medium">Ficha Técnica (PDF)</label>
+                                <div class="mb-2">
+                                    @if($producto->ficha_tecnica)
+                                        <div class="d-flex align-items-center p-2 border rounded bg-light mb-2">
+                                            <i class="bi bi-file-earmark-pdf text-danger fs-4 me-2"></i>
+                                            <a href="{{ asset('storage/' . $producto->ficha_tecnica) }}" target="_blank" class="small text-decoration-none">Ver PDF actual</a>
+                                        </div>
+                                    @endif
+                                </div>
+                                <input class="form-control @error('ficha_tecnica') is-invalid @enderror" type="file" id="ficha_tecnica" name="ficha_tecnica" accept=".pdf">
+                                <div class="form-text text-muted small">Deja este campo vacío si no quieres cambiar el PDF.</div>
+                                @error('ficha_tecnica')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -119,7 +157,6 @@
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                <div class="form-text text-muted ms-2">Un stock de 0 marcará el producto como "Agotado".</div>
                             </div>
                         </div>
 
@@ -128,7 +165,7 @@
                                 Cancelar
                             </a>
                             <button type="submit" class="btn btn-primary px-4">
-                                <i class="bi bi-check-circle me-2"></i>Guardar Cambios
+                                <i class="bi bi-check-circle me-2"></i>Actualizar Producto
                             </button>
                         </div>
 

@@ -28,6 +28,12 @@
                     <h5 class="card-title fw-bold text-dark mb-0"><i class="bi bi-info-circle me-2 text-primary"></i>Información General</h5>
                 </div>
                 <div class="card-body pt-0">
+                    
+                    @if($producto->imagen)
+                        <div class="mb-4 text-center bg-light rounded p-3">
+                            <img src="{{ asset('storage/' . $producto->imagen) }}" class="img-fluid rounded shadow-sm" style="max-height: 400px;" alt="{{ $producto->nombre }}">
+                        </div>
+                    @endif
                     <div class="mb-4">
                         <label class="text-uppercase text-muted small fw-bold mb-1">Nombre del Producto</label>
                         <h2 class="fs-4 fw-bold text-dark">{{ $producto->nombre }}</h2>
@@ -86,7 +92,7 @@
                     <hr class="text-muted opacity-25">
 
                     @php
-                        $stockPercent = min($producto->stock, 100); // Para la barra de progreso
+                        $stockPercent = min($producto->stock, 100); 
                         $stockColor = $producto->stock > 20 ? 'success' : ($producto->stock > 5 ? 'warning' : 'danger');
                         $stockText = $producto->stock > 20 ? 'En Stock' : ($producto->stock > 5 ? 'Pocas Unidades' : 'Stock Crítico');
                     @endphp
@@ -111,13 +117,23 @@
                 <div class="card-body p-4">
                     <h5 class="fw-bold mb-3">Acciones</h5>
                     <div class="d-grid gap-2">
+                        
+                        @if($producto->ficha_tecnica)
+                            <a href="{{ asset('storage/' . $producto->ficha_tecnica) }}" target="_blank" class="btn btn-outline-primary py-2 mb-2">
+                                <i class="bi bi-file-earmark-pdf me-2"></i>Ver Ficha Técnica
+                            </a>
+                        @endif
+
                         <a href="{{ route('productos.edit', $producto) }}" class="btn btn-warning py-2">
                             <i class="bi bi-pencil-square me-2"></i>Editar Producto
                         </a>
                         
-                        <button type="button" class="btn btn-outline-danger py-2" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                            <i class="bi bi-trash me-2"></i>Eliminar Producto
-                        </button>
+                        @if(Auth::user()->role === 'admin')
+                            <button type="button" class="btn btn-outline-danger py-2" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                <i class="bi bi-trash me-2"></i>Eliminar Producto
+                            </button>
+                        @endif
+
                     </div>
                 </div>
             </div>
@@ -125,29 +141,32 @@
     </div>
 </div>
 
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow">
-            <div class="modal-header border-bottom-0 pb-0">
-                <h5 class="modal-title fw-bold text-danger">Confirmar Eliminación</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body text-center py-4">
-                <div class="mb-3 text-danger">
-                    <i class="bi bi-exclamation-circle display-1"></i>
+@if(Auth::user()->role === 'admin')
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header border-bottom-0 pb-0">
+                    <h5 class="modal-title fw-bold text-danger">Confirmar Eliminación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <p class="mb-0 fs-5">¿Estás seguro de que quieres eliminar <strong>{{ $producto->nombre }}</strong>?</p>
-                <p class="text-muted small mt-2">Esta acción no se puede deshacer.</p>
-            </div>
-            <div class="modal-footer border-top-0 pt-0 justify-content-center pb-4">
-                <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">Cancelar</button>
-                <form action="{{ route('productos.destroy', $producto) }}" method="POST">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger px-4">Sí, eliminar</button>
-                </form>
+                <div class="modal-body text-center py-4">
+                    <div class="mb-3 text-danger">
+                        <i class="bi bi-exclamation-circle display-1"></i>
+                    </div>
+                    <p class="mb-0 fs-5">¿Estás seguro de que quieres eliminar <strong>{{ $producto->nombre }}</strong>?</p>
+                    <p class="text-muted small mt-2">Esta acción no se puede deshacer.</p>
+                </div>
+                <div class="modal-footer border-top-0 pt-0 justify-content-center pb-4">
+                    <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">Cancelar</button>
+                    <form action="{{ route('productos.destroy', $producto) }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger px-4">Sí, eliminar</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
+@endif
+
 @endsection
